@@ -23,6 +23,8 @@ services:
       - 8080:3000
     networks:
       - nicf
+    depends_on:
+      - db
 
 
 
