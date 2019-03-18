@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  db:
+    image: stackupiss/northwind-db:v1
+    restart: always
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - nicf
+
+  myapp:
+    build: ./server
+    restart: always
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=changeit
+      - APP_PORT=3000
+      - APP_DIR=/app
+    ports:
+      - 8080:3000
+    networks:
+      - nicf
+
+
+
+volumes:
+  db-data:
+
+networks:
+  nicf:
+    driver: bridge
