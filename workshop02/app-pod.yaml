@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: app-pod
+  namespace: custom-ns
+  labels:
+    name: app-pod
+
+spec:
+  containers:
+    - name: app-container
+      image: roastedpork/myapp
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 3000
+      env:
+        - name: DB_HOST
+          value: <PLACEHOLDER>

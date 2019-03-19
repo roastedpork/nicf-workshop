@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: db-pod
+  namespace: custom-ns
+  labels:
+    name: db-pod
+
+spec:
+  containers:
+    - name: db-container
+      image: stackupiss/northwind-db:v1
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 3306

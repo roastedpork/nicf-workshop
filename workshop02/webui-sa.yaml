@@ -1,0 +1,29 @@
+# Create ServiceAccount
+# SA is a user that is attached to a programme
+# is allowed to inspect the programme
+apiVersion: v1
+kind: ServiceAccount
+
+metadata:
+  name: webui-admin
+  namespace: custom-ns
+
+---
+
+# bind ServiceAccount to clusterrole/cluster-admin
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+
+metadata:
+  name: webui-admin-crb 
+  namespace: custom-ns
+
+roleRef: # Role that SA is binded to
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole  # because cluster-admin is in clusterrole
+  name: cluster-admin
+
+subjects: # subject is the newly-created ServiceAccount
+  - kind: ServiceAccount
+    namespace: custom-ns
+    name: webui-admin

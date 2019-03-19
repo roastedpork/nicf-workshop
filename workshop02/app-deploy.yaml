@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: app-deploy
+  namespace: custom-ns
+  labels:
+    name: app-deploy
+
+
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  
+  selector: # selector works based on labels
+    matchLabels:
+      name: app-pod
+  
+  template:
+    metadata:
+      name: app-pod
+      labels:
+        name: app-pod
+
+    spec:
+      containers:
+        - name: app-container
+          image: stackupiss/northwind-app:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              # DNS name of service: <svc-name>.<ns>.svc.cluster.local
+              value: db-service.custom-ns.svc.cluster.local
+            - name: INSTANCE_IP_ADDRESS
+              valueFrom:      # specify pod IP as env variable 
+                fieldRef:
+                  fieldPath: status.podIP
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"   # 1m = 1/1000 cpu cores
+
+---
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: app-service
+  namespace: custom-ns
+  labels:
+    name: app-service
+
+spec:
+  type: LoadBalancer    # so that it can be accessed from external
+  selector:
+    name: app-pod
+  ports:
+  - port: 80            # LB's port, for http
+    targetPort: 3000    # container's port
