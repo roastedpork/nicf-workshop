@@ -1,3 +1,6 @@
+0. enable automatic istio injection
+    kubectl label namespace default istio-injection=enabled
+
 1. Generate helm chart template
     helm create weatherapp
 
