@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name:  openweather-svc-entry
+  name:  {{ include "weatherapp.fullname" . }}
   namespace: {{ .Values.namespace }}
 spec:
   hosts:
