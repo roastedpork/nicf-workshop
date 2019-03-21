@@ -28,3 +28,5 @@ gateway:
   port: 80
 
 external_api: "api.openweathermap.com"
+
+namespace: custom-ns

@@ -3,7 +3,7 @@ kind: VirtualService
 
 metadata:
   name: {{ include "weatherapp.fullname" . }}
-  namespace: default
+  namespace: {{ .Values.namespace }}
 
 spec:
   hosts:

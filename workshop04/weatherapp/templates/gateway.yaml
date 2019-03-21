@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: {{ include "weatherapp.fullname" . }}
-  namespace: default
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     istio: ingressgateway
