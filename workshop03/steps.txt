@@ -1,0 +1,15 @@
+Get API key from api.openweathermap.com
+
+Run to deploy everything in deploy folder:
+
+    kubectl apply -f ./deploy
+
+Perform injection with istio for deployment.yaml before deploying:
+
+    cd deploy
+    istioctl kube-inject -f deployment.yaml > deployment-istio.yaml
+    kubectl apply -f deployment-istio.yaml
+
+Use the following command to monitor deployment
+
+    watch kubectl get pod,svc,deploy
