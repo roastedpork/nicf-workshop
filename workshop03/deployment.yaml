@@ -12,7 +12,7 @@ spec:
         app: weatherapp
     spec:
       containers:
-      - name: weatherappcontainer
+      - name: weatherapp-container
         image: stackupiss/weather:v1
         imagePullPolicy: Always
         env:

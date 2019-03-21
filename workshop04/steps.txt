@@ -1,0 +1,95 @@
+1. Generate helm chart template
+    helm create weatherapp
+
+2. Edit the generated template/deployment.yaml file:
+    Add in env variable references for APP_ID and APP_DEFAULT_CITY
+        env:
+          - name: APP_ID
+            value: {{ .Values.APP_ID }}
+          - name: APP_DEFAULT_CITY
+            value: {{ default "singapore" .Values.APP_DEFAULT_CITY }}
+
+    Add a variable reference for the containerPort
+        ports:
+        - name: http
+          containerPort: {{ .Values.deployment.containerPort }}
+          protocol: TCP
+    
+    Add livenessProbe and readinessProbe endpoints within the app
+
+    Add variable reference for replicaCount
+        replicas: {{ include "weatherapp.replicaCount" . }}
+
+3 Edit the generated template/service.yaml file:
+    Add variable reference for targetPort
+        targetPort: {{ .Values.service.targetPort }}
+
+3. Edit the generated values.yaml
+    Add variables for replicaCount, env, APP_ID, APP_DEFAULT_CITY, targetPort, containerPort
+        replicaCount:
+          prod: 2
+          dev: 1
+        env:
+          prod: true
+
+        APP_ID: ecbd92ff90840c3a36dad8d16f7f7fb2
+        APP_DEFAULT_CITY: japan
+    
+        service:
+          type: ClusterIP
+          port: 80
+          targetPort: 3000
+
+        deployment:
+            containerPort: 3000
+
+4. Edit the generated template/_helpers.tpl
+    Add reference for weatherapp.replicaCount
+        {{- define "weatherapp.replicaCount" -}}
+        {{- if .Values.env.prod -}}
+        {{- .Values.replicaCount.prod -}}
+        {{- else -}}
+        {{- .Values.replicaCount.dev -}}
+        {{- end -}}
+        {{- end -}}
+
+5. Run the helm project:
+    helm install weatherapp --name v1
+
+---
+(Optional) Deploy application as Istio service
+
+1. Create a template/gateway.yaml
+    Add references for gateway hostname and port
+        servers:
+        - hosts: 
+          - {{ .Values.gateway.hostname }}
+          port:
+            number: {{ .Values.gateway.port }}
+            protocol: HTTP
+            name: HTTP
+
+
+2. Create a template/virtualservice.yaml
+    Add references for hosts, gateways and route.destination.host
+        spec:
+          hosts:
+            - {{ .Values.gateway.hostname }}
+          gateways:
+            - {{ include "weatherapp.fullname" . }}
+          http:
+          - route:
+            - destination:
+                host: {{ include "weatherapp.fullname" . }}
+
+3. Create a template/service-entry.yaml 
+    Add reference to external API url
+        hosts:
+        - {{ .Values.external_api}}
+
+3. Add the reference values into values.yaml
+    gateway:
+      hostname: "jp.178.128.135.141.nip.io"
+      port: 80
+
+    external_api: "api.openweathermap.com"

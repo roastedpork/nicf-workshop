@@ -1,0 +1,5 @@
+1. Get the application URL by running these commands:
+
+Access this application using port-forwarding locally.
+Because the service is not exposed to the public.
+#ClusterIP 

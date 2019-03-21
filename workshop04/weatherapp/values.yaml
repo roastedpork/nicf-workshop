@@ -1,0 +1,30 @@
+replicaCount:
+  prod: 2
+  dev: 1
+env:
+  prod: true
+
+image:
+  repository: xin2dedocker/weather-app
+  tag: bingjie-fixed
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+deployment:
+  containerPort: 3000
+
+APP_ID: ecbd92ff90840c3a36dad8d16f7f7fb2
+APP_DEFAULT_CITY: japan
+
+gateway:
+  hostname: "jp.178.128.135.141.nip.io"
+  port: 80
+
+external_api: "api.openweathermap.com"
